@@ -4,6 +4,15 @@ import util.InputUtil;
 
 public class PaymentView {
 
+     public int showMainMenu() {
+        System.out.println("Menu bayar");
+        System.out.println("1. Buat Pembayaran");
+        System.out.println("2. Tambah Pembayaran");
+        System.out.println("0. Keluar");
+
+        return InputUtil.readInt("Pilih menu: ");
+    }
+
     public double inputAmount() {
         return InputUtil.readDouble("Masukkan jumlah yang dibayar: ");
     }
