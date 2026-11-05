@@ -37,8 +37,8 @@ public class Wallet implements PaymentStrategy {
     }
 
     @Override
-    public boolean validateAuthorization(AuthorizationMethod method, String credential) {
-        return false;
+    public AuthorizationStrategy getAuthorizationStrategy(AuthorizationMethod method) {
+        return null;
     }
 
     public String getName() {

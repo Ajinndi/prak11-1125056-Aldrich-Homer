@@ -11,7 +11,7 @@ public interface PaymentStrategy {
     
     List<AuthorizationMethod> getRequiredAuthorizations();
 
-    boolean validateAuthorization(AuthorizationMethod method, String credential);
+    AuthorizationStrategy getAuthorizationStrategy(AuthorizationMethod method);
 
     String getPaymentName();
 }

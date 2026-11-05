@@ -34,14 +34,14 @@ public class EWallet implements PaymentStrategy {
     }
 
     @Override
-    public boolean validateAuthorization(AuthorizationMethod method, String credential) {
+    public AuthorizationStrategy getAuthorizationStrategy(AuthorizationMethod method) {
         switch (method) {
             case PIN:
-                return pin.equals(credential);
+                return new PinAuthorizationStrategy(pin);
             case OTP:
-                return credential != null && credential.length() == 6;
+                return new OtpAuthorizationStrategy();
             default:
-                return false;
+                return null;
         }
     }
 

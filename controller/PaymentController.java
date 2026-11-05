@@ -5,7 +5,6 @@ import model.DebitCard;
 import model.CreditCard;
 import model.EWallet;
 import model.PaymentStrategy;
-import model.AuthorizationMethod;
 import exception.InvalidAuthorizationException;
 import util.InputUtil;
 import view.PaymentView;

@@ -43,12 +43,15 @@ public class CreditCard implements PaymentStrategy {
     }
 
     @Override
-    public boolean validateAuthorization(AuthorizationMethod method, String credential) {
-        if (method == AuthorizationMethod.CCV) return ccv.equals(credential);
-
-        if (method == AuthorizationMethod.PIN) return pin.equals(credential);
-
-        return false;
+    public AuthorizationStrategy getAuthorizationStrategy(AuthorizationMethod method) {
+        switch (method) {
+            case CCV:
+                return new CcvAuthorizationStrategy(ccv);
+            case PIN:
+                return new PinAuthorizationStrategy(pin);
+            default:
+                return null;
+        }
     }
 
     public String getCardNumber() {

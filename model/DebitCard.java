@@ -39,10 +39,10 @@ public class DebitCard implements PaymentStrategy {
     }
 
     @Override
-    public boolean validateAuthorization(AuthorizationMethod method, String credential) {
-        if (method == AuthorizationMethod.PIN) return pin.equals(credential);
+    public AuthorizationStrategy getAuthorizationStrategy(AuthorizationMethod method) {
+        if (method == AuthorizationMethod.PIN) return new PinAuthorizationStrategy(pin);
 
-        return false;
+        return null;
     }
 
     public String getCardNumber() {

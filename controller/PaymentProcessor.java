@@ -2,6 +2,7 @@ package controller;
 
 import model.PaymentStrategy;
 import model.AuthorizationMethod;
+import model.AuthorizationStrategy;
 import exception.InvalidAuthorizationException;
 import util.InputUtil;
 
@@ -18,8 +19,9 @@ public class PaymentProcessor {
 
             AuthorizationMethod method = authorizations.get(i);
             String credential = InputUtil.readString("Masukkan " + method + ": ");
+            AuthorizationStrategy authStrategy = strategy.getAuthorizationStrategy(method);
 
-            if (!strategy.validateAuthorization(method, credential)) throw new InvalidAuthorizationException("Autentikasi " + method + " gagal!");
+            if (authStrategy == null || !authStrategy.validate(credential)) throw new InvalidAuthorizationException("Autentikasi " + method + " gagal!");
         }
 
         strategy.pay(amount);
