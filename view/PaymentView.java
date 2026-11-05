@@ -25,6 +25,7 @@ public class PaymentView {
         System.out.println("1. Wallet");
         System.out.println("2. Debit Card");
         System.out.println("3. Credit Card");
+        System.out.println("4. E-Wallet");
     }
 
     public void showMessage(String message) {

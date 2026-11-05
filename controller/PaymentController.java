@@ -3,6 +3,7 @@ package controller;
 import model.Wallet;
 import model.DebitCard;
 import model.CreditCard;
+import model.EWallet;
 import model.PaymentStrategy;
 import model.AuthorizationMethod;
 import exception.InvalidAuthorizationException;
@@ -73,6 +74,10 @@ public class PaymentController {
             case 3:
                 addCreditCard();
                 break;
+            
+            case 4:
+                addEWallet();
+                break;
 
             default:
                 view.showMessage("Pilihan tidak ada.");
@@ -113,5 +118,14 @@ public class PaymentController {
         paymentMethods.add(new CreditCard(cardNumber, limit, ccv, pin));
 
         view.showMessage("Credit Card berhasil ditambahkan!");
+    }
+
+    private void addEWallet() {
+        String phoneNumber = InputUtil.readString("Masukkan nomor HP: ");
+        double balance = InputUtil.readDouble("Masukkan saldo E-Wallet: ");
+        String pin = InputUtil.readString("Masukkan PIN: ");
+
+        paymentMethods.add(new EWallet(phoneNumber, balance, pin));
+        view.showMessage("E-Wallet berhasil ditambahkan!");
     }
 }
