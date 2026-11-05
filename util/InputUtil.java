@@ -7,16 +7,16 @@ public class InputUtil {
 
     public static int readInt(String message) {
         System.out.print(message);
-        return sc.nextInt();
+        return Integer.parseInt(sc.nextLine());
     }
 
     public static double readDouble(String message) {
         System.out.print(message);
-        return sc.nextDouble();
+        return Double.parseDouble(sc.nextLine());
     }
 
-    public static String readLine(String message) {
+    public static String readString(String message) {
         System.out.print(message);
-        return sc.next();
+        return sc.nextLine();
     }
 }

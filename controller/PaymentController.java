@@ -3,59 +3,104 @@ package controller;
 import model.Wallet;
 import model.DebitCard;
 import model.CreditCard;
+import model.PaymentStrategy;
+import model.AuthorizationMethod;
+import exception.InvalidAuthorizationException;
+import util.InputUtil;
 import view.PaymentView;
 
+import java.util.*;
+
 public class PaymentController {
-    private Wallet wallet;
-    private DebitCard debitCard;
-    private CreditCard creditCard;
+    private List<PaymentStrategy> paymentMethods;
+    private PaymentProcessor processor;
     private PaymentView view;
 
     public PaymentController() {
-        wallet = new Wallet("Main Wallet", 10000);
-        debitCard = new DebitCard("1234567890", 100000, "1234");
-        creditCard = new CreditCard("9876543210", 500000, "123", "5678");
+        paymentMethods = new ArrayList<>();
+        processor = new PaymentProcessor();
         view = new PaymentView();
+
+        paymentMethods.add(new Wallet("Wallet Utama", 10000));
     }
 
-    public void start() {
-        while (true) {
-            double amount = view.inputAmount();
-            int method = view.selectPaymentMethod();
+    public void makePayment() {
+        double amount = InputUtil.readDouble("Masukkan nominal pembayaran: ");
 
-            switch (method) {
-                case 1:
-                    if (wallet.validate(amount)) {
-                        wallet.pay(amount);
-                        view.showPaymentSuccess("cash", wallet.getCashValue());
-                    } else {
-                        view.showPaymentFailed();
-                    }
-                    break;
+        view.showPaymentMethods(paymentMethods);
 
-                case 2:
-                    if (debitCard.validate(amount)) {
-                        debitCard.pay(amount);
-                        view.showPaymentSuccess("debit card", debitCard.getBalance());
-                    } else {
-                        view.showPaymentFailed();
-                    }
-                    break;
+        int choice = InputUtil.readInt("Pilih metode pembayaran: ");
 
-                case 3:
-                    if (creditCard.validate(amount)) {
-                        creditCard.pay(amount);
-                        view.showCreditPaymentSuccess(creditCard.getCurrentDebt(), creditCard.getAvailableLimit());
-                    } else {
-                        view.showPaymentFailed();
-                    }
-                    break;
-
-                default:
-                    view.showInvalidPaymentMethod();
-                    break;
-            }
-            System.out.println();
+        if (choice < 1 || choice > paymentMethods.size()) {
+            System.out.println("Pilihan tidak valid!");
+            return;
         }
+
+        PaymentStrategy selectedMethod = paymentMethods.get(choice - 1);
+
+        try {
+            processor.processPayment(selectedMethod, amount);
+        } catch (InvalidAuthorizationException | IllegalArgumentException e) {
+            System.out.println("Pembayaran gagal: " + e.getMessage());
+        }
+    }
+
+    public void addPaymentMethod() {
+        view.showAddPaymentMenu();
+
+        int choice = InputUtil.readInt("Pilih jenis pembayaran: ");
+
+        switch (choice) {
+            case 1:
+                addWallet();
+                break;
+
+            case 2:
+                addDebitCard();
+                break;
+
+            case 3:
+                addCreditCard();
+                break;
+
+            default:
+                view.showMessage("Pilihan tidak ada.");
+        }
+    }
+
+    private void addWallet() {
+        String name = InputUtil.readString("Masukkan nama Wallet: ");
+
+        double balance = InputUtil.readDouble("Masukkan saldo Wallet: ");
+
+        paymentMethods.add(new Wallet(name, balance));
+
+        view.showMessage("Wallet berhasil ditambahkan!");
+    }
+
+    private void addDebitCard() {
+        String cardNumber = InputUtil.readString("Masukkan nomor Debit Card: ");
+
+        double balance = InputUtil.readDouble("Masukkan saldo Debit Card: ");
+
+        String pin = InputUtil.readString("Masukkan PIN: ");
+
+        paymentMethods.add(new DebitCard(cardNumber, balance, pin));
+
+        view.showMessage("Debit Card berhasil ditambahkan!");
+    }
+
+    private void addCreditCard() {
+        String cardNumber = InputUtil.readString("Masukkan nomor Credit Card: ");
+
+        double limit = InputUtil.readDouble("Masukkan limit Credit Card: ");
+
+        String ccv = InputUtil.readString("Masukkan CCV: ");
+
+        String pin = InputUtil.readString("Masukkan PIN: ");
+
+        paymentMethods.add(new CreditCard(cardNumber, limit, ccv, pin));
+
+        view.showMessage("Credit Card berhasil ditambahkan!");
     }
 }

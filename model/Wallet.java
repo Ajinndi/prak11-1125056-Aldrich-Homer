@@ -1,6 +1,8 @@
 package model;
 
-public class Wallet {
+import java.util.*;
+
+public class Wallet implements PaymentStrategy {
     private String name;
     private double cashValue;
 
@@ -9,14 +11,26 @@ public class Wallet {
         this.cashValue = cashValue;
     }
 
+    @Override
     public boolean validate(double amount) {
         return amount > 0 && cashValue >= amount;
     }
 
+    @Override
     public void pay(double amount) {
         if (validate(amount)) {
             cashValue -= amount;
         }
+    }
+
+    @Override
+    public List<AuthorizationMethod> getRequiredAuthorizations() {
+        return List.of();
+    }
+
+    @Override
+    public boolean validateAuthorization(AuthorizationMethod method, String credential) {
+        return false;
     }
 
     public String getName() {

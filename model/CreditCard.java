@@ -1,6 +1,8 @@
 package model;
 
-public class CreditCard {
+import java.util.List;
+
+public class CreditCard implements PaymentStrategy {
     private String cardNumber;
     private double limit;
     private double currentDebt;
@@ -15,14 +17,30 @@ public class CreditCard {
         this.pin = pin;
     }
 
+    @Override
     public boolean validate(double amount) {
         return amount > 0 && (currentDebt + amount) <= limit;
     }
 
+    @Override
     public void pay(double amount) {
         if (validate(amount)) {
             currentDebt += amount;
         }
+    }
+
+    @Override
+    public List<AuthorizationMethod> getRequiredAuthorizations() {
+        return List.of(AuthorizationMethod.CCV, AuthorizationMethod.PIN);
+    }
+
+    @Override
+    public boolean validateAuthorization(AuthorizationMethod method, String credential) {
+        if (method == AuthorizationMethod.CCV) return ccv.equals(credential);
+
+        if (method == AuthorizationMethod.PIN) return pin.equals(credential);
+
+        return false;
     }
 
     public String getCardNumber() {
