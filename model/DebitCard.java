@@ -14,15 +14,23 @@ public class DebitCard implements PaymentStrategy {
     }
 
     @Override
+    public String getPaymentName() {
+        return "Debit Card";
+    }
+
+    @Override
     public boolean validate(double amount) {
         return amount > 0 && balance >= amount;
     }
 
     @Override
+    public boolean canPay(double amount) {
+        return amount > 0 && amount <= 10000000 && validate(amount);
+    }
+
+    @Override
     public void pay(double amount) {
-        if (validate(amount)) {
-            balance -= amount;
-        }
+        if (validate(amount)) balance -= amount;
     }
 
     @Override

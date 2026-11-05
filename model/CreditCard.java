@@ -18,15 +18,23 @@ public class CreditCard implements PaymentStrategy {
     }
 
     @Override
+    public String getPaymentName() {
+        return "Credit Card";
+    }
+
+    @Override
     public boolean validate(double amount) {
         return amount > 0 && (currentDebt + amount) <= limit;
     }
 
     @Override
+    public boolean canPay(double amount) {
+        return amount >= 100000 && amount <= 100000000 && validate(amount);
+    }
+
+    @Override
     public void pay(double amount) {
-        if (validate(amount)) {
-            currentDebt += amount;
-        }
+        if (validate(amount)) currentDebt += amount;
     }
 
     @Override
@@ -53,9 +61,5 @@ public class CreditCard implements PaymentStrategy {
 
     public double getCurrentDebt() {
         return currentDebt;
-    }
-
-    public double getAvailableLimit() {
-        return limit - currentDebt;
     }
 }

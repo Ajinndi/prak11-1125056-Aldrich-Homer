@@ -12,15 +12,23 @@ public class Wallet implements PaymentStrategy {
     }
 
     @Override
+    public String getPaymentName() {
+        return "Wallet";
+    }
+
+    @Override
     public boolean validate(double amount) {
         return amount > 0 && cashValue >= amount;
     }
 
     @Override
+    public boolean canPay(double amount) {
+        return amount >= 100 && amount <= 1000000 && validate(amount);
+    }
+
+    @Override
     public void pay(double amount) {
-        if (validate(amount)) {
-            cashValue -= amount;
-        }
+        if (validate(amount)) cashValue -= amount;
     }
 
     @Override

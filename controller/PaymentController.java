@@ -20,23 +20,34 @@ public class PaymentController {
         paymentMethods = new ArrayList<>();
         processor = new PaymentProcessor();
         view = new PaymentView();
-
-        paymentMethods.add(new Wallet("Wallet Utama", 10000));
     }
 
     public void makePayment() {
         double amount = InputUtil.readDouble("Masukkan nominal pembayaran: ");
 
-        view.showPaymentMethods(paymentMethods);
+        List<PaymentStrategy> availableMethods = new ArrayList<>();
+
+        for (int i = 0; i < paymentMethods.size(); i++) {
+            PaymentStrategy method = paymentMethods.get(i);
+
+            if (method.canPay(amount)) availableMethods.add(method);
+        }
+
+        if (availableMethods.isEmpty()) {
+            view.showMessage("Tidak ada metode pembayaran yang tersedia untuk nominal tersebut.");
+            return;
+        }
+
+        view.showPaymentMethods(availableMethods);
 
         int choice = InputUtil.readInt("Pilih metode pembayaran: ");
 
-        if (choice < 1 || choice > paymentMethods.size()) {
+        if (choice < 1 || choice > availableMethods.size()) {
             System.out.println("Pilihan tidak valid!");
             return;
         }
 
-        PaymentStrategy selectedMethod = paymentMethods.get(choice - 1);
+        PaymentStrategy selectedMethod = availableMethods.get(choice - 1);
 
         try {
             processor.processPayment(selectedMethod, amount);

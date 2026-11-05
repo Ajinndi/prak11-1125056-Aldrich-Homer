@@ -16,7 +16,7 @@ public class PaymentView {
         System.out.println("Metode pembayaran");
 
         for (int i = 0; i < methods.size(); i++) {
-            System.out.println((i + 1) + ". " + methods.get(i).getClass().getSimpleName());
+            System.out.println((i + 1) + ". " + methods.get(i).getPaymentName());
         }
     }
 
